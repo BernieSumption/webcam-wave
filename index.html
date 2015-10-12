@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title></title>
+	<script src="vision.js"></script>
+	<style>
+		canvas {
+			image-rendering: pixelated;
+			image-rendering: -moz-crisp-edges;
+			width: 250px;
+			height: 200px;
+		}
+	</style>
+	<script>
+		"use strict";
+
+	</script>
+</head>
+<body style="margin: 25px;">
+
+<h1>JS wave detector research prototype</h1>
+
+<p>A little script that tries to detect people waving at a webcam. The debugging images below show the various stages of the computer vision pipeline.</p>
+
+<p>It works by detecting a minimum number of rapid brightness transitions. View the source for more details.</p>
+
+<h1>Is someone waving right now: <span id="is-waving">initialising...</span></h1>
+
+<table>
+	<tr>
+		<td>Camera image</td>
+		<td>Diff with previous frame</td>
+		<td>Increase contrast</td>
+	</tr>
+	<tr>
+		<td>
+			<canvas width="50" height="40" id="camera"></canvas>
+		</td>
+		<td>
+			<canvas width="50" height="40" id="diff"></canvas>
+		</td>
+		<td>
+			<canvas width="50" height="40" id="contrast-diff"></canvas>
+		</td>
+	</tr>
+	<tr>
+		<td>Annotate 0 and 255</td>
+		<td>Counts <span style="background: #BBB">(
+			<span style="font-weight: bold; color: #000">0</span>
+			<span style="font-weight: bold; color: #00F">1</span>
+			<span style="font-weight: bold; color: #0F0">2</span>
+			<span style="font-weight: bold; color: #0FF">3</span>
+			<span style="font-weight: bold; color: #F00">4</span>
+			<span style="font-weight: bold; color: #F0F">5</span>
+			<span style="font-weight: bold; color: #FF0">6</span>
+			<span style="font-weight: bold; color: #FFF">7+</span>
+			)</span>
+		</td>
+		<td>count >= transition threshold</td>
+	</tr>
+	<tr>
+		<td>
+			<canvas width="50" height="40" id="contrast-diff-annotated"></canvas>
+		</td>
+		<td>
+			<canvas width="50" height="40" id="state"></canvas>
+		</td>
+		<td>
+			<canvas width="50" height="40" id="countPasses"></canvas>
+		</td>
+	</tr>
+	<tr>
+		<td>Wave</td>
+	</tr>
+	<tr>
+		<td>
+			<canvas width="50" height="40" id="filteredWaveMap"></canvas>
+		</td>
+	</tr>
+</table>
+
+<h3>Tweak various constants...</h3>
+
+<table style="margin-bottom: 25px;">
+	<tr>
+		<td>Contrast factor:</td>
+		<td><input type="number" value="10" id="contrastFactor"></td>
+		<td style="font-size: 0.7em">Larger values make the system more sensitive to poor lighting contrast but more prone to false positives</td>
+	</tr>
+	<tr>
+		<td>Max interval:</td>
+		<td><input type="number" value="3" id="maxInterval"></td>
+		<td style="font-size: 0.7em">The maximum number of frames to wait between brightness transitions. Too low and the system can't see the relaxed and elderly. Too high and random fidgeting will be classes as a wave.</td>
+	</tr>
+	<tr>
+		<td>Transition count:</td>
+		<td><input type="number" value="5" id="transitionCount"></td>
+		<td style="font-size: 0.7em">The number of consecutive transitions classified as a wave</td>
+	</tr>
+	<tr>
+		<td>Outlier threshold:</td>
+		<td><input type="number" value="4" id="outlierThreshold"></td>
+		<td style="font-size: 0.7em">Ignore potential wave pixels if they have less than this number of wavey neighbours</td>
+	</tr>
+</table>
+
+</body>
+</html>
